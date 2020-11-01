@@ -1,0 +1,29 @@
+{
+  "name": "site-project",
+  "version": "1.0.0",
+  "description": "Project Drupal",
+  "main": "gulpfile.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "node ./node_modules/gulp/bin/gulp.js css:prod > /dev/null 2>&1",
+    "prod": "node ./node_modules/gulp/bin/gulp.js css:prod",
+    "watch": "node ./node_modules/gulp/bin/gulp.js",
+    "dev": "node ./node_modules/gulp/bin/gulp.js css"
+  },
+  "keywords": [
+    "gulp",
+    "sass"
+  ],
+  "author": "Matthieu Girardeau <mattjrardo@me.com>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-if": "^2.0.2",
+    "gulp-notify": "^3.2.0",
+    "gulp-sass": "^3.2.0",
+    "gulp-sourcemaps": "^2.6.4"
+  }
+}

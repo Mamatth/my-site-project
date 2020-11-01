@@ -46,6 +46,18 @@ services:
     ports:
       - '8080:8080'
 
+  node-drupal:
+    build:
+      context: ./docker/node
+      args:
+        - NODE_VERSION=${NODE_VERSION}
+        - UID=${UID}
+        - GID=${GID}
+    working_dir: /srv
+    entrypoint: "sleep 9999d"
+    volumes:
+      - ./:/srv/
+
   mail.ternum-gen.docker.localhost:
     image: mailhog/mailhog
     ports:
