@@ -1,23 +1,19 @@
 {
-  "name": "drupal/generateur-sites",
-  "version": "0.1.0",
-  "description": "Générateur de site drupal Perso",
+  "name": "my-site-project/site-template",
+  "version": "0.1.8",
+  "description": "Composer site internet",
   "type": "project",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
-      "name": "Matthieu girardeau",
-      "role": "Product manager"
+      "name": "Matthieu GIRARDEAU",
+      "role": ""
     }
   ],
   "repositories": [
     {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
-    },
-    {
-      "type": "path",
-      "url": "project/modules/atolcd/*"
     },
     {
       "type": "package",
@@ -95,7 +91,6 @@
     "drupal/colordialog": "^1.3",
     "drupal/config_ignore": "^2.2",
     "drupal/console": "^1.9",
-    "drupal/content_sync": "^2.1",
     "drupal/ctools": "^3.2",
     "drupal/datagouvfr_geocoder": "^1.1",
     "drupal/devel": "^2.1",
@@ -113,12 +108,11 @@
     "drupal/token": "^1.5",
     "drupal/weight": "^3.1",
     "drush/drush": "*",
-    "composer/installers": "^1.9",
-    "cweagans/composer-patches": "^1.7",
-    "drupal/core-composer-scaffold": "^9.0",
-    "drupal/core-recommended": "^9.0",
-    "vlucas/phpdotenv": "^5.1",
-    "webflo/drupal-finder": "^1.2"
+    "composer/installers": "^1.2",
+    "cweagans/composer-patches": "^1.6.5",
+    "drupal/core-composer-scaffold": "^8.8",
+    "drupal/core-recommended": "^8.8",
+    "drupal/core-dev": "^8.8"
   },
   "conflict": {
     "drupal/drupal": "*"
@@ -126,8 +120,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
-    "vendor-dir": "html/vendor",
-    "sort-packages": true
+    "vendor-dir": "www/vendor"
   },
   "autoload": {
     "classmap": [
@@ -136,93 +129,85 @@
   },
   "scripts": {
     "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
-    "fix-right-on-site": "chmod u+w -R html/sites/default || true",
+    "fix-right-on-site": "chmod u+w -R www/sites/default || true",
     "pre-install-cmd": [
-      "SiteGen\\composer\\ScriptHandler::checkComposerVersion",
+      "MySiteProject\\composer\\ScriptHandler::checkComposerVersion",
       "@fix-right-on-site"
     ],
     "pre-update-cmd": [
-      "SiteGen\\composer\\ScriptHandler::checkComposerVersion",
+      "MySiteProject\\composer\\ScriptHandler::checkComposerVersion",
       "@fix-right-on-site"
     ],
     "post-install-cmd": [
       "@drupal-scaffold",
-      "SiteGen\\composer\\ScriptHandler::createRequiredFiles"
+      "MySiteProject\\composer\\ScriptHandler::createRequiredFiles"
     ],
     "post-update-cmd": [
       "@drupal-scaffold",
-      "SiteGen\\composer\\ScriptHandler::createRequiredFiles"
+      "MySiteProject\\composer\\ScriptHandler::createRequiredFiles"
     ]
   },
   "extra": {
+    "merge-plugin": {
+      "include": [
+        "www/modules/contrib/webform/composer.libraries.json"
+      ]
+    },
     "composer-exit-on-patch-failure": true,
     "patchLevel": {
       "drupal/core": "-p2"
     },
     "patches": {
-      "drupal/core": {
-        "2915792 - Fix menu link view permissions": "patchs/menu_link_content-view-permissions.patch",
-        "2996114 - Internal check ressource type of routes": "patchs/routes-internal-check.patch",
-        "Require global_settings.php first when in multsite": "patchs/multisite_share_global_settings.patch",
-        "2738051 - Some entities can be NULL": "patchs/filter-out-nulls.patch",
-        "2857304 - Multisite setup based on paths is broken": "patchs/drupal-multisites-subdirectories.patch"
-      },
-      "drupal/content_sync": {
-        "3052772 - Entity manager implemented during import": "https://www.drupal.org/files/issues/2019-05-06/content_sync-entity_manager_refs.patch",
-        "2873074#comment-13019230 - Drush commands": "patchs/content-sync-drush-commands.patch",
-        "2982986 - Installation causes error (v2)": "https://www.drupal.org/files/issues/2019-03-13/content_sync-Installation_causes_error_v2-2982986-10-D8.patch",
-        "3076902 - Import content of type .": "https://www.drupal.org/files/issues/2019-12-11/Error-importing-content-3076902-2.patch",
-        "3056550 - Warning: Parameter must be an array or a Countable object": "https://www.drupal.org/files/issues/2019-05-23/content_sync_fix_notice-3056550-2.patch"
-      }
     },
-    "installer-types": [
-      "drupal-default-module"
-    ],
     "installer-paths": {
-      "html/core": [
+      "www/core": [
         "type:drupal-core"
       ],
-      "html/libraries/{$name}": [
+      "www/libraries/{$name}": [
         "type:drupal-library"
       ],
-      "html/libraries/ckeditor/plugins/{$name}": [
-        "vendor:ckeditor-plugin"
-      ],
-      "html/modules/contrib/{$name}": [
+      "www/modules/contrib/{$name}": [
         "type:drupal-module"
       ],
-      "html/profiles/contrib/{$name}": [
+      "www/profiles/contrib/{$name}": [
         "type:drupal-profile"
       ],
-      "html/themes/contrib/{$name}": [
+      "www/themes/contrib/{$name}": [
         "type:drupal-theme"
       ],
-      "html/drush/Commands/{$name}": [
+      "www/drush/Commands/{$name}": [
         "type:drupal-drush"
       ],
-      "html/console/{$name}": [
+      "www/console/{$name}": [
         "type:drupal-console-language"
-      ],
-      "html/modules/custom/{$name}": [
-        "type:drupal-custom-module"
-      ],
-      "html/themes/custom/{$name}": [
-        "type:drupal-custom-theme"
       ]
     },
     "drupal-scaffold": {
       "locations": {
-        "web-root": "html/",
-        "project-root": "project/"
+        "web-root": "www"
       },
-      "symlink": true,
-      "overwrite": true,
+      "allowed-packages": [
+        "drupal/core"
+      ],
       "file-mapping": {
         "[project-root]/.gitattributes": false,
         "[project-root]/.editorconfig": false,
-        "[web-root]/robots.txt": "assets/robots-default.txt",
+        "[web-root]/sites/example.sites.php": false,
+        "[web-root]/sites/example.settings.local.php": false,
+        "[web-root]/sites/development.services.yml": false,
+        "[web-root]/web.config": false,
+        "[web-root]/.ht.router.php": false,
         "[web-root]/.eslintrc.json": false,
         "[web-root]/.eslintignore": false,
+        "[web-root]/.csslintrc": false,
+        "[web-root]/example.gitignore": false,
+        "[web-root]/INSTALL.txt": false,
+        "[web-root]/README.txt": false,
+        "[web-root]/sites/README.txt": false,
+        "[web-root]/modules/README.txt": false,
+        "[web-root]/profiles/README.txt": false,
+        "[web-root]/themes/README.txt": false,
+        "[web-root]/sites/default/default.settings.php": "project/conf/settings.php",
         "[web-root]/sites/default/settings.php": "project/conf/settings.php"
       }
     }

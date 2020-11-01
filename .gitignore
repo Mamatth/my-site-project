@@ -1,7 +1,8 @@
+.env
+
+www
+sql/*
+!sql/import
 sql/import/*
 !sql/import/.gitkeep
-html
-!html/.gitkeep
-.env
-.editorconfig
-.gitattributes
+node_modules/*

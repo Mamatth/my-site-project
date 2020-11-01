@@ -5,7 +5,7 @@
  * Contains \DrupalProject\composer\ScriptHandler.
  */
 
-namespace SiteGen\composer;
+namespace MySiteProject\composer;
 
 use Composer\Script\Event;
 use Composer\Semver\Comparator;
@@ -37,12 +37,7 @@ class ScriptHandler {
 
     // Create symbolic link
     if (!$fs->exists($drupalRoot . "/config-sync")) {
-      $fs->symlink(Path::makeRelative($projectRoot . "/project/config-sync",
-        $drupalRoot), $drupalRoot . "/config-sync");
-    }
-    if (!$fs->exists($drupalRoot . "/content-sync")) {
-      $fs->symlink(Path::makeRelative($projectRoot . "/project/content-sync",
-        $drupalRoot), $drupalRoot . "/content-sync");
+        $fs->symlink(Path::makeRelative($projectRoot . "/project/config-sync", $drupalRoot), $drupalRoot . "/config-sync");
     }
 
 
@@ -76,25 +71,6 @@ class ScriptHandler {
       $event->getIO()
             ->write("Created a sites/default/files directory with chmod 0777");
     }
-
-    // Manage config sync dir by environment
-    foreach ([
-               'config-sync-qualif',
-               'config-sync-prod',
-             ] as $oneConfigSync) {
-
-      if (!$fs->exists($drupalRoot . '/' . $oneConfigSync)) {
-        $fs->mkdir($drupalRoot . '/' . $oneConfigSync);
-      }
-
-      $fs->mirror($projectRoot . '/project/config-sync',
-        $drupalRoot . '/' . $oneConfigSync, NULL, ['delete' => TRUE]);
-      $fs->mirror($projectRoot . '/project/' . $oneConfigSync,
-        $drupalRoot . '/' . $oneConfigSync, NULL, ['override' => TRUE]);
-    }
-    // Mirrors files-sync folder (default images used in content) to sites/default/files folder in order to be used by gatsby-source-filesystem plugin
-    $fs->mirror($projectRoot . '/project/content-sync/files/public',
-      $drupalRoot . '/sites/default/files');
   }
 
 
