@@ -1,0 +1,7 @@
+sql/import/*
+!sql/import/.gitkeep
+html
+!html/.gitkeep
+.env
+.editorconfig
+.gitattributes

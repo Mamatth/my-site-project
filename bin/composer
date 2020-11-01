@@ -1,0 +1,6 @@
+#!/bin/bash
+
+PROJECT_ROOT="$(realpath "$(git rev-parse --git-dir)/..")"
+DOCKER_COMPOSE="$(command -v docker-compose) --project-directory ${PROJECT_ROOT}"
+
+$DOCKER_COMPOSE exec php-drupal /entrypoint composer "$@"

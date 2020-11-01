@@ -1,0 +1,53 @@
+version: "3.7"
+
+services:
+  postgres-drupal:
+    image: postgres:11
+    env_file:
+      - drupal/.env
+    volumes:
+      - ./drupal/sql/import:/docker-entrypoint-initdb.d
+    ports:
+      - '5432:5432'
+
+  php-drupal:
+    build:
+      context: ./docker/php
+      args:
+        - "VERSION=${PHP_VERSION}-${COMPOSER_VERSION}"
+        - "MAIL_HOST=mail"
+      dockerfile: Dockerfile
+    environment:
+      - ENVIRONMENT
+    env_file:
+      - drupal/.env
+    volumes:
+      - ./drupal:/var/www
+      - ./drupal:/srv
+      - ~/.composer:/home/.composer
+
+  drupal.site-gen.docker.localhost:
+    build:
+      context: ./docker/apache
+      args:
+        - "VERSION=${APACHE_TAG}"
+        - "PHP_FPM_HOST=php-drupal"
+        - "APACHE_PORT=8080"
+        - "CONF_FILE=demo.apache.conf"
+      dockerfile: Dockerfile
+    depends_on:
+      - php-drupal
+    networks:
+      default:
+        aliases:
+            - cv-drupal.site-gen.docker.localhost
+    volumes:
+      - ./drupal:/var/www
+    ports:
+      - '8080:8080'
+
+  mail.ternum-gen.docker.localhost:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

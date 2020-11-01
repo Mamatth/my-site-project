@@ -1,0 +1,39 @@
+diff --git a/core/lib/Drupal/Core/DrupalKernel.php b/core/lib/Drupal/Core/DrupalKernel.php
+index 7c9fb6c8ef..83655e3ef1 100644
+--- a/core/lib/Drupal/Core/DrupalKernel.php
++++ b/core/lib/Drupal/Core/DrupalKernel.php
+@@ -392,18 +392,15 @@ public static function findSitePath(Request $request, $require_settings = TRUE,
+     }
+ 
+     // Otherwise, use find the site path using the request.
+-    $script_name = $request->server->get('SCRIPT_NAME');
+-    if (!$script_name) {
+-      $script_name = $request->server->get('SCRIPT_FILENAME');
+-    }
++    $request_uri = $request->server->get('REQUEST_URI');
+     $http_host = $request->getHttpHost();
+ 
+     $sites = [];
+     include $app_root . '/sites/sites.php';
+ 
+-    $uri = explode('/', $script_name);
++    $uri = explode('/', $request_uri);
+     $server = explode('.', implode('.', array_reverse(explode(':', rtrim($http_host, '.')))));
+-    for ($i = count($uri) - 1; $i > 0; $i--) {
++    for ($i = count($uri); $i > 0; $i--) {
+       for ($j = count($server); $j > 0; $j--) {
+         $dir = implode('.', array_slice($server, -$j)) . implode('.', array_slice($uri, 0, $i));
+         if (isset($sites[$dir]) && file_exists($app_root . '/sites/' . $sites[$dir])) {
+diff --git a/core/tests/Drupal/Tests/Core/DrupalKernel/DrupalKernelTest.php b/core/tests/Drupal/Tests/Core/DrupalKernel/DrupalKernelTest.php
+index bc32d04ba6..d7391318e7 100644
+--- a/core/tests/Drupal/Tests/Core/DrupalKernel/DrupalKernelTest.php
++++ b/core/tests/Drupal/Tests/Core/DrupalKernel/DrupalKernelTest.php
+@@ -190,7 +190,7 @@ public function testFindSitePath() {
+       $request->server->set('SERVER_NAME', 'www.example.org');
+       $request->server->set('SERVER_PORT', '8888');
+       $request->server->set('SCRIPT_NAME', '/index.php');
+-      $this->assertEquals('sites/example', DrupalKernel::findSitePath($request, TRUE, $vfs_root->url('drupal_root')));
++      $this->assertEquals('sites/default', DrupalKernel::findSitePath($request, TRUE, $vfs_root->url('drupal_root')));
+       $this->assertEquals('sites/example', DrupalKernel::findSitePath($request, FALSE, $vfs_root->url('drupal_root')));
+     }
+ 

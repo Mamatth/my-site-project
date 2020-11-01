@@ -1,0 +1,26 @@
+diff --git a/core/modules/views/src/Plugin/views/cache/CachePluginBase.php b/core/modules/views/src/Plugin/views/cache/CachePluginBase.php
+index 929ecac..73ab8e6 100644
+--- a/core/modules/views/src/Plugin/views/cache/CachePluginBase.php
++++ b/core/modules/views/src/Plugin/views/cache/CachePluginBase.php
+@@ -311,7 +311,7 @@ public function getRowCacheTags(ResultRow $row) {
+     $tags = !empty($row->_entity) ? $row->_entity->getCacheTags() : [];
+
+     if (!empty($row->_relationship_entities)) {
+-      foreach ($row->_relationship_entities as $entity) {
++      foreach (array_filter($row->_relationship_entities) as $entity) {
+         $tags = Cache::mergeTags($tags, $entity->getCacheTags());
+       }
+     }
+diff --git a/core/modules/views/src/Plugin/views/query/Sql.php b/core/modules/views/src/Plugin/views/query/Sql.php
+index 09a754b..506418d 100644
+--- a/core/modules/views/src/Plugin/views/query/Sql.php
++++ b/core/modules/views/src/Plugin/views/query/Sql.php
+@@ -1694,7 +1694,7 @@ protected function getAllEntities() {
+       }
+     }
+
+-    return $entities;
++    return array_filter($entities);
+   }
+
+   public function addSignature(ViewExecutable $view) {

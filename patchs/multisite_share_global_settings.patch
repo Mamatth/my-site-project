@@ -1,0 +1,19 @@
+Index: html/core/lib/Drupal/Core/Site/Settings.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- html/core/lib/Drupal/Core/Site/Settings.php	(date 1589811404712)
++++ html/core/lib/Drupal/Core/Site/Settings.php	(date 1589811404712)
+@@ -121,6 +121,11 @@
+     $config = [];
+     $databases = [];
+ 
++    // Having global settings file loaded before specific one
++    if(is_readable($app_root . '/sites/global.settings.php')) {
++      require $app_root . '/sites/global.settings.php';
++    }
++
+     if (is_readable($app_root . '/' . $site_path . '/settings.php')) {
+       require $app_root . '/' . $site_path . '/settings.php';
+     }

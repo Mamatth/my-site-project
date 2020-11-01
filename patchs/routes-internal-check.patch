@@ -1,0 +1,48 @@
+Index: html/core/modules/jsonapi/src/Routing/Routes.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- html/core/modules/jsonapi/src/Routing/Routes.php	(date 1580200829858)
++++ html/core/modules/jsonapi/src/Routing/Routes.php	(date 1580200829858)
+@@ -431,9 +431,16 @@
+    *   array; FALSE otherwise.
+    */
+   protected static function hasNonInternalTargetResourceTypes(array $resource_types) {
+-    return array_reduce($resource_types, function ($carry, ResourceType $target) {
+-      return $carry || !$target->isInternal();
+-    }, FALSE);
++    foreach ($resource_types as $resource_type) {
++      if (
++        isset($resource_type) &&
++        $resource_type instanceof ResourceType &&
++        !$resource_type->isInternal()
++      ) {
++        return TRUE;
++      }
++    }
++    return FALSE;
+   }
+ 
+   /**
+@@ -447,9 +454,17 @@
+    *   given array; FALSE otherwise.
+    */
+   protected static function hasNonInternalFileTargetResourceTypes(array $resource_types) {
+-    return array_reduce($resource_types, function ($carry, ResourceType $target) {
+-      return $carry || (!$target->isInternal() && $target->getEntityTypeId() === 'file');
+-    }, FALSE);
++    foreach ($resource_types as $resource_type) {
++      if (
++        isset($resource_type) &&
++        $resource_type instanceof ResourceType &&
++        !$resource_type->isInternal() &&
++        $resource_type->getEntityTypeId() === 'file'
++      ) {
++        return TRUE;
++      }
++    }
++    return FALSE;
+   }
+ 
+   /**
