@@ -1,0 +1,36 @@
+#!/bin/bash
+
+PROJECT_ROOT="$(realpath "$(git rev-parse --git-dir)/..")"
+DOCKER_COMPOSE="$(command -v docker-compose) --project-directory ${PROJECT_ROOT}"
+DOCKER_EXEC_PG="${DOCKER_COMPOSE} exec postgres-drupal sh -c"
+
+case "$1" in
+        connect-root)
+            # shellcheck disable=SC2016
+            $DOCKER_EXEC_PG 'export PGPASSWORD="${POSTGRES_PASSWORD}";psql -U$POSTGRES_USER -d $POSTGRES_DB'
+            ;;
+
+        connect)
+            # shellcheck disable=SC2016
+            $DOCKER_EXEC_PG 'export PGPASSWORD="${POSTGRES_PASSWORD}";psql -U$POSTGRES_USER -d $POSTGRES_DB'
+            ;;
+
+        dump)
+            currentdate=$(date +"%Y_%m_%d_%H_%M_%S")
+            dumpfilename="${PROJECT_ROOT}/drupal/sql/backup_db_${currentdate}.sql"
+            echo "Export to : ${dumpfilename}"
+            # export structure
+            echo "Export table definition"
+            # shellcheck disable=SC2016
+            $DOCKER_EXEC_PG 'export PGPASSWORD="${POSTGRES_PASSWORD}";pg_dump -U"$POSTGRES_USER" --no-owner -s -F p -d "$POSTGRES_DB"' > "$dumpfilename" 2> /dev/null
+            # export datas
+            echo "Export datas"
+            # shellcheck disable=SC2016
+            $DOCKER_EXEC_PG 'export PGPASSWORD="${POSTGRES_PASSWORD}";pg_dump -U"$POSTGRES_USER" --no-owner -a -F p -d "$POSTGRES_DB"' >> "$dumpfilename" 2> /dev/null
+            echo "Done !"
+            ;;
+        *)
+            echo $"Usage: $0 {connect|connect-root|dump}"
+            exit 1
+
+esac
