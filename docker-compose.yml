@@ -4,9 +4,9 @@ services:
   postgres-drupal:
     image: postgres:11
     env_file:
-      - drupal/.env
+      - .env
     volumes:
-      - ./drupal/sql/import:/docker-entrypoint-initdb.d
+      - ./sql/import:/docker-entrypoint-initdb.d
     ports:
       - '5432:5432'
 
@@ -20,10 +20,10 @@ services:
     environment:
       - ENVIRONMENT
     env_file:
-      - drupal/.env
+      - .env
     volumes:
-      - ./drupal:/var/www
-      - ./drupal:/srv
+      - ./:/var/www
+      - ./:/srv
       - ~/.composer:/home/.composer
 
   drupal.site-gen.docker.localhost:
@@ -42,7 +42,7 @@ services:
         aliases:
             - cv-drupal.site-gen.docker.localhost
     volumes:
-      - ./drupal:/var/www
+      - ./:/var/www
     ports:
       - '8080:8080'
 
